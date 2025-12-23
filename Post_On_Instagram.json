@@ -1,0 +1,127 @@
+{
+  "name": "Post on instagram",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -368,
+        -16
+      ],
+      "id": "56d80f3b-e1de-49ee-b2f0-fa57a050d639",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6a2772f9-f75d-483e-b8b5-1e37a1a210b4",
+              "name": "url",
+              "value": "https://thumbs.dreamstime.com/b/mystical-green-forest-path-sunlight-nature-background-ideal-websites-games-advertising-mood-376069688.jpg",
+              "type": "string"
+            },
+            {
+              "id": "72d5f945-6752-4c17-8c7b-f8c1fd27c0d9",
+              "name": "caption",
+              "value": "This is an automated post",
+              "type": "string"
+            },
+            {
+              "id": "a1589077-65b1-459b-93bc-0499d92e8bef",
+              "name": "node",
+              "value": "17841476366641771",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        -16
+      ],
+      "id": "525b1085-4ba6-44f1-a253-17157cc23265",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v23.0",
+        "node": "17841476366641771",
+        "edge": "media",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "url",
+                "value": "={{ $json.url }}"
+              },
+              {
+                "name": "caption",
+                "value": "={{ $json.caption }}"
+              },
+              {
+                "name": "node",
+                "value": "={{ $json.node }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        48,
+        -16
+      ],
+      "id": "881b58e6-e285-4e07-9700-5ad89414f277",
+      "name": "Facebook Graph API",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "R6QANkQRKV2bcWWv",
+          "name": "Facebook Graph account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9f9aee3c-0253-4ecd-b2a0-dcd4fca7473a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8659bd7e124e2b9e112864bdfd1b69886a586a9728524b335fe9ce079360fb17"
+  },
+  "id": "M3CFQNHDoYsBQCXD",
+  "tags": []
+}

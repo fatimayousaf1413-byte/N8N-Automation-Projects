@@ -1,0 +1,1255 @@
+{
+  "name": "YouTube Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -736,
+        -96
+      ],
+      "id": "1ecb9c89-5247-4a25-92b9-b54929863c07",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/youtube/v3/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "part",
+              "value": "snippet"
+            },
+            {
+              "name": "order",
+              "value": "viewCount"
+            },
+            {
+              "name": "type",
+              "value": "video"
+            },
+            {
+              "name": "maxResult",
+              "value": "20"
+            },
+            {
+              "name": "key",
+              "value": "AIzaSyAnjD-iTEP0ggGOAQQwMv65nAY5OMdGeIs"
+            },
+            {
+              "name": "q",
+              "value": "={{ $json.q }}"
+            },
+            {
+              "name": "regionCode",
+              "value": "PK"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -272,
+        -96
+      ],
+      "id": "243e6db9-6e17-4f8e-b8c7-a55100a7b402",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0a77b057-b8c8-4907-b8f0-c9bc1b471bd1",
+              "name": "title",
+              "value": "={{ $json.items[0].snippet.title }}",
+              "type": "string"
+            },
+            {
+              "id": "38a9ab95-8dc4-4e0a-b6df-a3a755b880fa",
+              "name": "video_url",
+              "value": "=https://www.youtube.com/watch?v={{ $json.items[0].id.videoId }}",
+              "type": "string"
+            },
+            {
+              "id": "5c2b98c4-3a20-49aa-b866-ed61f068d1fe",
+              "name": "publishedAt",
+              "value": "={{ $json.items[0].snippet.publishedAt }}",
+              "type": "string"
+            },
+            {
+              "id": "ae25319a-a532-459a-b83c-f06890a84e9e",
+              "name": "source",
+              "value": "Youtube",
+              "type": "string"
+            },
+            {
+              "id": "47dc38fe-4791-4bab-ad3d-c01c95c0af1a",
+              "name": "score",
+              "value": "={{Math.floor(Math.random() * 1000) + 1}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -32,
+        -96
+      ],
+      "id": "f7b95778-5c37-4ca7-868e-08938dde7058",
+      "name": "Clean Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "const keywords = [\"AI\", \"Motivation\", \"Technology\", \"Health\", \"Finance\"];\nconst randomKeyword = keywords[Math.floor(Math.random() * keywords.length)];\nconst today = new Date().toISOString();\n\nreturn {\n    q: randomKeyword,\n    publishedAfter: today\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -512,
+        -96
+      ],
+      "id": "f783ecf8-e777-4432-bb47-8ead19433820",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "13dMzcMUpyo0B9-Na6lUJXSndbvtZNSRUcMnukEarEs8",
+          "mode": "list",
+          "cachedResultName": "Youtube trending videos ideas",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13dMzcMUpyo0B9-Na6lUJXSndbvtZNSRUcMnukEarEs8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13dMzcMUpyo0B9-Na6lUJXSndbvtZNSRUcMnukEarEs8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Title": "={{ $json.title }}",
+            "Video Url": "={{ $json.video_url }}",
+            "PublishedAt": "={{ $json.publishedAt }}",
+            "Source ": "={{ $json.source }}",
+            "Score": "={{ $json.score }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Video Url",
+              "displayName": "Video Url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "PublishedAt",
+              "displayName": "PublishedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Source ",
+              "displayName": "Source ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        -96
+      ],
+      "id": "e67b882b-888b-4a1a-b351-22d41be7f235",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "p3kUNeeocnIGllPx",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Generate Content Idea",
+        "height": 288,
+        "width": 1536,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -800,
+        -176
+      ],
+      "typeVersion": 1,
+      "id": "ff52d672-3193-4da7-8516-21cfd0edc5ae",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "sendTo": "ayshamalik1413@gmail.com",
+        "subject": "New Idea",
+        "message": "=New Trending Video Idea \n\nIdea : {{ $json.Title }}\n\nSample Video : {{ $json['Video Url'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        480,
+        -96
+      ],
+      "id": "8a2c566d-7ab6-4d8b-a844-54c49f21b35f",
+      "name": "Send a message",
+      "webhookId": "53a61ad3-1463-43d5-a4c6-809885b092be",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "JuybaxNbrVqsIk4f",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Generate Script",
+        "height": 672,
+        "width": 1536,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -800,
+        144
+      ],
+      "typeVersion": 1,
+      "id": "dd15ddd7-b958-448b-a313-623ed4e6266a",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write a full YouTube video script based on the following idea:\n\nIdea: {{ $json.title }}\n\nInclude:\n- Strong hook (first 5 seconds)\n- Engaging intro\n- Main content (clear structure)\n- Call to action (like, subscribe, comment)\n\nTone: Engaging and human\nLength: 5–7 minutes",
+        "options": {
+          "systemMessage": "You are a assistance for witting the scripts of YouTube video. In short "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -400,
+        256
+      ],
+      "id": "e7b13eae-7393-4725-b4f9-5e30e2a770af",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        256
+      ],
+      "id": "c5bf36b9-0edf-473c-913c-2b7b746860a1",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "sCiVd5LFRtzjx2Qq",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate:\n- 1 YouTube SEO title\n- Short description (max 150 words)\n- 10 SEO tags\n\nGenerate the professioanl format docs for my google docs ok\n\n\nBased on this script:\n{{ $json.output }}",
+        "options": {
+          "systemMessage": "You are a helpful assistant"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        176,
+        256
+      ],
+      "id": "16ca08ed-5234-40af-99da-add3ba996d11",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        560,
+        272
+      ],
+      "id": "168420ba-b216-4ede-8a4a-6f43a42eadd5",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "sCiVd5LFRtzjx2Qq",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "folderId": "default",
+        "title": "={{ $json.title }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        576
+      ],
+      "id": "7a050d18-0c1b-4652-be9d-afb3a82cb34e",
+      "name": "Create a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "jzsvbF4Un6ixokRA",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "=YOUTUBE VIDEO SEO DETAILS\n\n\n\nVIDEO TITLE:\n\n{{ $('Code in JavaScript1').item.json.title }}\n\n\n\nVIDEO DESCRIPTION:\n\n{{ $('Code in JavaScript1').item.json.description }}\n\n\n\n\nSEO TAGS:\n\n{{ $('Code in JavaScript1').item.json.tags }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        -96,
+        576
+      ],
+      "id": "85c2bfe8-d5e8-40f5-9ea8-8299ded4bf14",
+      "name": "Update a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "jzsvbF4Un6ixokRA",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $input.first().json.output || \"\";  // Your AI raw output string\n\n// Simple helper to extract with regex safely\nfunction extract(regex) {\n  const match = output.match(regex);\n  return match ? match[1].trim() : \"\";\n}\n\n// Extract title, description, tags from AI output\nconst title = extract(/##?\\s*Video Title\\s*\\n\\*\\*(.+?)\\*\\*/i);\nconst description = extract(/##?\\s*Video Description\\s*\\n([\\s\\S]+?)\\n---/i);\nconst tagsRaw = extract(/##?\\s*SEO Tags\\s*\\n([\\s\\S]+)/i);\n\n// Convert tags list to comma-separated string\nlet tags = tagsRaw\n  .split(/[\\n,]+/)      // split by newline or comma\n  .map(t => t.trim())   // trim spaces\n  .filter(t => t.length > 0);\ntags = tags.join(\", \");\n\n// Build nicely formatted plain text content for Google Docs\nconst doc_content = \n`YouTube Video SEO Details\n\nVideo Title\n${title}\n\nVideo Description\n${description}\n\nSEO Tags\n${tags}\n`;\n\nreturn [{\n  json: {\n    title,\n    description,\n    tags,\n    doc_content\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -672,
+        576
+      ],
+      "id": "b358c28a-04c7-4d68-b937-ed0dc3ee5332",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "sendTo": "ayshamalik1413@gmail.com",
+        "subject": "Script Ready",
+        "emailType": "text",
+        "message": "=✍️ Script is ready!  \n\nTitle:  {{ $('Code in JavaScript1').item.json.title }}\n\nDocument Link : {{ $json['Document url'] }}\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        480,
+        576
+      ],
+      "id": "bddf6e3a-7986-4d87-b0bc-162a6b5a3d0f",
+      "name": "Send a message1",
+      "webhookId": "f130da15-3813-402a-a4a3-d8276355619b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "JuybaxNbrVqsIk4f",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dc5dbafe-428e-4396-b309-d2cb37354da6",
+              "name": "Document url",
+              "value": "=https://docs.google.com/document/d/{{ $json.documentId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        176,
+        576
+      ],
+      "id": "3e36edf5-e717-421a-803a-9024325b1583",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=> rompt for Image Generation\n> \n\n🎥 First-Person POV Image & Video Prompt Generator (Single Input → Unified Output)\n\n📌 Task:\nYou are an advanced AI specializing in transforming a short user-provided description into a hyper-realistic, cinematic first-person POV prompt. This single prompt is optimized for both text-to-image and text-to-video AI models such as Flux, MidJourney, Stable Diffusion, Runway Gen-3 Alpha, and Pika Labs.\n\n📌 The final output must be a single, AI-ready paragraph that:\n✔ Strictly adheres to first-person POV, ensuring immersion.\n✔ Begins with the image description and smoothly transitions into background animation details for video.\n✔ Includes visible limbs interacting with the environment.\n✔ Describes textures, lighting, sensory details, and environmental motion.\n✔ Follows structured formatting for AI consistency.\n✔ Stays under 950 characters.\n\nHere is the short user-provided description: {{ $('Code in JavaScript1').item.json.description }}\n\n🔹 POV Rules & Guidelines for Generating Prompts\n✅ First-Person Perspective Only\n\nThe viewer must feel like they are experiencing the moment firsthand.\nThe framing should mimic a GoPro-style immersive shot, with depth, interaction, and motion.\n✅ Visible Limbs for Immersion\n\nA hand, foot, or both must be visible in the foreground, actively engaging with the environment.\nThe limbs should be gripping, touching, moving, reacting—interacting with the world naturally.\n✅ World Interaction\n\nThe body should physically interact with objects (e.g., holding a shield in battle, adjusting a gas mask, gripping reins on horseback).\nThe world must feel alive and reactive to the viewer’s presence.\n✅ Sensory & Cinematic Detail\n\nThe scene should engage multiple senses:\nSight (lighting, colors, scale)\nTouch (heat, cold, textures)\nSound (distant echoes, wind howling, gunfire)\nSmell (burning wood, fresh rain, damp earth)\nInclude weather effects, motion, environmental conditions, and emotional weight (e.g., fear, awe, adrenaline, nostalgia).\n✅ Structured Formatting\n1️⃣ Foreground (POV Interaction - Image Focus): Start with \"First-person view POV GoPro shot of [describe hands/feet and their action]...\"\n2️⃣ Background (Scene & Environment - Video Focus): Transition into \"In the background, [describe scenery, lighting, animated environmental effects]...\"\n\n🔹 User Input (Single Prompt Field Example)\nExample Input: POV: You’re a knight in battle\n📌 AI-Generated Output (Example for “POV: You’re a Knight in Battle”)\nPOV: You’re a Knight in Battle\nFirst-person view POV GoPro shot of my gauntleted hands gripping the hilt of a longsword, the steel gleaming under the afternoon sun. Blood and mud splatter my armor as I brace for the enemy’s charge. My heartbeat pounds in my ears, my grip tightening as I prepare to strike. In the background, banners of rival kingdoms whip violently in the wind, soldiers locked in brutal combat. Arrows streak through the sky, their deadly tips glinting as they plunge into the earth. A warhorse rears nearby, its rider knocked from the saddle, the ground trembling beneath the weight of battle. Smoke billows from burning wooden carts, embers swirling through the air. The sky darkens as storm clouds gather, distant war horns blaring through the chaos. The scent of iron and sweat clings to the battlefield, a mix of fear and adrenaline surging through my veins. A warrior lunges—my blade meets his, sparks flying as the battle rages on.\n\n📌 AI-Generated Output (Example for “POV: You Wake Up as Cleopatra in Ancient Egypt”)\nPOV: You Wake Up as Cleopatra in Ancient Egypt\nFirst-person view POV GoPro shot of my elegant hands delicately adjusting a bejeweled golden collar, turquoise gemstones catching the warm glow of candlelight. My silk robe shimmers as I lift a goblet of wine, the cool metal pressing against my fingertips. The scent of lotus flowers drifts through the air, mixing with the smoky perfume of burning myrrh. In the background, towering marble pillars adorned with gold leaf glisten under flickering torches. Servants in flowing linen robes move gracefully, their hushed whispers blending with the soft trickle of a nearby fountain. The palace’s stained-glass windows cast colorful patterns onto the polished limestone floor, shifting as the breeze stirs the silk curtains. Beyond the open balcony, the Nile glistens beneath the moonlight, feluccas drifting along its surface. A tame leopard lounges beside my throne, its tail flicking lazily. A distant drum beats—a call for my presence in the royal court.\n\n📌 AI-Generated Output (Example for “POV: You’re a Viking at Sea”)\nPOV: You’re a Viking at Sea\nFirst-person view POV GoPro shot of my calloused hands gripping the rough wooden oar, veins straining as I pull through the churning icy waters. The cold wind bites against my exposed skin, my breath visible in the frigid air. The salt spray stings my face as waves crash against the longship, the hull creaking under the force of the tide. In the background, my fellow warriors row in sync, their fur-lined cloaks whipping in the wind, their voices roaring in a war chant. A sea serpent figurehead looms over the bow, cutting through the dense morning mist. The dark clouds overhead threaten an incoming storm, lightning flashing in the distance. Seagulls cry out, circling above as if warning of what lies ahead. The scent of wet wood, brine, and sweat mixes in the air as the ship heaves forward, the distant shoreline emerging on the horizon—our next raid awaits.\n\n📌 AI-Generated Output (Example for “POV: You’re a Soldier in the Trenches of World War I”)\nPOV: You’re a Soldier in the Trenches of World War I\nFirst-person view POV GoPro shot of my dirt-covered hands gripping a bolt-action rifle, my breath fogging against the freezing air. My uniform is soaked in mud, the damp fabric clinging to my skin. The wooden trench walls loom beside me, reinforced with sandbags, slick with rain. In the background, artillery shells streak through the night sky, their explosions illuminating the battlefield in violent flashes. The ground trembles with each impact, shaking loose debris from above. Barbed wire stretches across no man’s land, barely visible through the rolling fog. A comrade beside me fumbles for his cigarette, his fingers shaking as he lights a match. Machine gun fire rattles in the distance, muffled by the pounding rain. The acrid scent of gunpowder and rotting wood hangs in the air. A whistle pierces through the chaos—the signal to charge. My heart pounds as I hoist my rifle, the camera tilting upward toward the hellscape beyond the trench walls.\n\nFINAL REMINDER:\n\n- Output MUST be less than 950 characters\n- Output MUST be one json:\n{ \"prompt\": \"Generated text output here...\" }"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        944
+      ],
+      "id": "7d67874c-89e4-40b0-a311-c5302e7ea8b3",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "sCiVd5LFRtzjx2Qq",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer 1495d062ae9a742a5122a24d792892df"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"sora-2-text-to-video\",\n  \"input\": {\n    \"prompt\": \"{{$json.prompt}}\",\n    \"aspect_ratio\": \"landscape\",\n    \"remove_watermark\": true\n  }\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -48,
+        944
+      ],
+      "id": "45a734fc-a663-49aa-aba6-ef5b2d5f7baa",
+      "name": "Create video"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/jobs/recordInfo?taskId=5aef991d44f6bdb9b82ff5bfb2a4562b",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 1495d062ae9a742a5122a24d792892df"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        496,
+        944
+      ],
+      "id": "4e162c71-5a9a-4f0a-9a5a-1bedfe74f7a9",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "content": "## Generate  video",
+        "height": 304,
+        "width": 1568,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -816,
+        864
+      ],
+      "typeVersion": 1,
+      "id": "a68abaef-baf2-4536-ab25-437c008f1072",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const text = $json.content.parts[0].text;\nconst obj = JSON.parse(text);\nreturn {\n  prompt: obj.prompt\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -320,
+        944
+      ],
+      "id": "3748db5d-00dc-4631-b84a-3c09caba7203",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "content": "## Upload Video",
+        "height": 304,
+        "width": 880
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -480,
+        1216
+      ],
+      "typeVersion": 1,
+      "id": "d435dbcb-ee91-46d4-a2f8-0aff4f786cae",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "upload",
+        "title": "=AI ASMR vs Traditional ASMR: Who Wins for Stress & Anxiety Relief? (Ultimate Comparison)",
+        "regionCode": "PK",
+        "categoryId": "1",
+        "binaryProperty": "=Video",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        112,
+        1296
+      ],
+      "id": "027ae53b-c93f-4afe-bb81-5e8dd5c8449d",
+      "name": "Upload a video",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "V6JzNa5YEPmNhIgp",
+          "name": "YouTube account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        944
+      ],
+      "id": "6fb94e33-6093-474d-ba59-1bbcbc87d7ac",
+      "name": "Wait",
+      "webhookId": "15ef55c9-d381-4d99-82ba-498067681dd4"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Assuming input data comes from previous node, e.g., HTTP Request1\n\n// Get input data from previous node (assuming single item)\nconst input = $input.first().json.data;\n\n// Parse the resultJson string into an object (if it's a string)\nlet resultData;\nif (typeof input.resultJson === 'string') {\n  resultData = JSON.parse(input.resultJson);\n} else {\n  resultData = input.resultJson;\n}\n\n// Extract the first URL from resultUrls array\nconst videoUrl = resultData.resultUrls && resultData.resultUrls.length > 0\n  ? resultData.resultUrls[0]\n  : null;\n\nreturn [\n  {\n    json: {\n      videoUrl: videoUrl\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -320,
+        1296
+      ],
+      "id": "2bb489bf-aead-4d8f-a2a2-f6f8ff48c279",
+      "name": "Code in JavaScript3"
+    }
+  ],
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "timestamp": "2025-12-18T01:14:20.034-05:00",
+          "Readable date": "December 18th 2025, 1:14:20 am",
+          "Readable time": "1:14:20 am",
+          "Day of week": "Thursday",
+          "Year": "2025",
+          "Month": "December",
+          "Day of month": "18",
+          "Hour": "01",
+          "Minute": "14",
+          "Second": "20",
+          "Timezone": "America/New_York (UTC-05:00)"
+        }
+      }
+    ],
+    "Code in JavaScript": [
+      {
+        "json": {
+          "q": "AI",
+          "publishedAfter": "2025-12-18T06:14:20.073Z"
+        }
+      }
+    ],
+    "HTTP Request": [
+      {
+        "json": {
+          "kind": "youtube#searchListResponse",
+          "etag": "EbW3_WN_vPPAF5nf1tAVLF5abRw",
+          "nextPageToken": "CAUQAA",
+          "regionCode": "PK",
+          "pageInfo": {
+            "totalResults": 1000000,
+            "resultsPerPage": 5
+          },
+          "items": [
+            {
+              "kind": "youtube#searchResult",
+              "etag": "FLoz5uw9njHU638WW9ZJyhuhido",
+              "id": {
+                "kind": "youtube#video",
+                "videoId": "3bYx9XKbmQk"
+              },
+              "snippet": {
+                "publishedAt": "2025-09-22T00:57:09Z",
+                "channelId": "UC5NKvvg2LJEbodqfoCtR_UQ",
+                "title": "AI ASMR vs Traditional ASMR Which is Better for Reducing Stress and Anxiety?",
+                "description": "(Wear headphones) The most viral AI ASMR ever — relax instantly with this whisper. Let your brain melt. Subscribe for more ...",
+                "thumbnails": {
+                  "default": {
+                    "url": "https://i.ytimg.com/vi/3bYx9XKbmQk/default.jpg",
+                    "width": 120,
+                    "height": 90
+                  },
+                  "medium": {
+                    "url": "https://i.ytimg.com/vi/3bYx9XKbmQk/mqdefault.jpg",
+                    "width": 320,
+                    "height": 180
+                  },
+                  "high": {
+                    "url": "https://i.ytimg.com/vi/3bYx9XKbmQk/hqdefault.jpg",
+                    "width": 480,
+                    "height": 360
+                  }
+                },
+                "channelTitle": "AI Paralelo",
+                "liveBroadcastContent": "none",
+                "publishTime": "2025-09-22T00:57:09Z"
+              }
+            },
+            {
+              "kind": "youtube#searchResult",
+              "etag": "Xv2Zlyykguvl849TPq4SRBVnFpc",
+              "id": {
+                "kind": "youtube#video",
+                "videoId": "rBaLmPXH2fA"
+              },
+              "snippet": {
+                "publishedAt": "2025-04-06T09:54:12Z",
+                "channelId": "UC0WWV92sckOKbHkQelk0BPw",
+                "title": "Squid Game AI Edible Slime ASMR #squidgame #squidgame2 #ai #asmr",
+                "description": "shorts #cute #funny Squid Game Season 2 New ai edit. squidgame squidgame 2 squidgamchallenge ai funny This video is ...",
+                "thumbnails": {
+                  "default": {
+                    "url": "https://i.ytimg.com/vi/rBaLmPXH2fA/default.jpg",
+                    "width": 120,
+                    "height": 90
+                  },
+                  "medium": {
+                    "url": "https://i.ytimg.com/vi/rBaLmPXH2fA/mqdefault.jpg",
+                    "width": 320,
+                    "height": 180
+                  },
+                  "high": {
+                    "url": "https://i.ytimg.com/vi/rBaLmPXH2fA/hqdefault.jpg",
+                    "width": 480,
+                    "height": 360
+                  }
+                },
+                "channelTitle": "A.I.C ",
+                "liveBroadcastContent": "none",
+                "publishTime": "2025-04-06T09:54:12Z"
+              }
+            },
+            {
+              "kind": "youtube#searchResult",
+              "etag": "6uX3Q6jYNLrgf_GOWN3i9VWaK0s",
+              "id": {
+                "kind": "youtube#video",
+                "videoId": "RM9-6FfZdgg"
+              },
+              "snippet": {
+                "publishedAt": "2025-09-14T06:15:03Z",
+                "channelId": "UCIeZESv8skwy5Y0GJIwCqjQ",
+                "title": "Shocking! The poor kitten has the Transformer !#shorts  #cat  #ai  #story  #kitten #autobots",
+                "description": "Shocking! The poor kitten has the Transformer !",
+                "thumbnails": {
+                  "default": {
+                    "url": "https://i.ytimg.com/vi/RM9-6FfZdgg/default.jpg",
+                    "width": 120,
+                    "height": 90
+                  },
+                  "medium": {
+                    "url": "https://i.ytimg.com/vi/RM9-6FfZdgg/mqdefault.jpg",
+                    "width": 320,
+                    "height": 180
+                  },
+                  "high": {
+                    "url": "https://i.ytimg.com/vi/RM9-6FfZdgg/hqdefault.jpg",
+                    "width": 480,
+                    "height": 360
+                  }
+                },
+                "channelTitle": "kitten Storys",
+                "liveBroadcastContent": "none",
+                "publishTime": "2025-09-14T06:15:03Z"
+              }
+            },
+            {
+              "kind": "youtube#searchResult",
+              "etag": "s8_J44FdwtjQGI1FgHJUuW0Rf9I",
+              "id": {
+                "kind": "youtube#video",
+                "videoId": "66DbAL-Fp94"
+              },
+              "snippet": {
+                "publishedAt": "2025-05-27T01:05:19Z",
+                "channelId": "UCdyUUcphNBj33GnSbjFC1VQ",
+                "title": "The little cat peed in its pants #funny #ai #aicat #shorts #blwaistory",
+                "description": "The little cat peed in its pants #funny #ai #aicat #shorts #blwaistory \"Please, everyone, support me! I want to keep showing you ...",
+                "thumbnails": {
+                  "default": {
+                    "url": "https://i.ytimg.com/vi/66DbAL-Fp94/default.jpg",
+                    "width": 120,
+                    "height": 90
+                  },
+                  "medium": {
+                    "url": "https://i.ytimg.com/vi/66DbAL-Fp94/mqdefault.jpg",
+                    "width": 320,
+                    "height": 180
+                  },
+                  "high": {
+                    "url": "https://i.ytimg.com/vi/66DbAL-Fp94/hqdefault.jpg",
+                    "width": 480,
+                    "height": 360
+                  }
+                },
+                "channelTitle": "CRAZY AI STORY ",
+                "liveBroadcastContent": "none",
+                "publishTime": "2025-05-27T01:05:19Z"
+              }
+            },
+            {
+              "kind": "youtube#searchResult",
+              "etag": "e39uHiQzzKqqKzBENfsPX-p1JGM",
+              "id": {
+                "kind": "youtube#video",
+                "videoId": "_ocaTEGBo-Y"
+              },
+              "snippet": {
+                "publishedAt": "2024-06-08T23:42:38Z",
+                "channelId": "UCal_2JvDuhNySJ64Wz1TACg",
+                "title": "Always lend a helping hand to others #cat #ai #catvideos #catlover #poorcat #aiart",
+                "description": "",
+                "thumbnails": {
+                  "default": {
+                    "url": "https://i.ytimg.com/vi/_ocaTEGBo-Y/default.jpg",
+                    "width": 120,
+                    "height": 90
+                  },
+                  "medium": {
+                    "url": "https://i.ytimg.com/vi/_ocaTEGBo-Y/mqdefault.jpg",
+                    "width": 320,
+                    "height": 180
+                  },
+                  "high": {
+                    "url": "https://i.ytimg.com/vi/_ocaTEGBo-Y/hqdefault.jpg",
+                    "width": 480,
+                    "height": 360
+                  }
+                },
+                "channelTitle": "Mpminds",
+                "liveBroadcastContent": "none",
+                "publishTime": "2024-06-08T23:42:38Z"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "Clean Data": [
+      {
+        "json": {
+          "title": "AI ASMR vs Traditional ASMR Which is Better for Reducing Stress and Anxiety?",
+          "video_url": "https://www.youtube.com/watch?v=3bYx9XKbmQk",
+          "publishedAt": "2025-09-22T00:57:09Z",
+          "source": "Youtube",
+          "score": "805"
+        }
+      }
+    ],
+    "Append row in sheet": [
+      {
+        "json": {
+          "Title": "AI ASMR vs Traditional ASMR Which is Better for Reducing Stress and Anxiety?",
+          "Video Url": "https://www.youtube.com/watch?v=3bYx9XKbmQk",
+          "PublishedAt": "2025-09-22T00:57:09Z",
+          "Source ": "Youtube",
+          "Score": "805"
+        }
+      }
+    ],
+    "Send a message": [
+      {
+        "json": {
+          "id": "19b316413d760d94",
+          "threadId": "19b316413d760d94",
+          "labelIds": [
+            "UNREAD",
+            "SENT",
+            "INBOX"
+          ]
+        }
+      }
+    ],
+    "AI Agent": [
+      {
+        "json": {
+          "output": "## YouTube Video Script: AI ASMR vs Traditional ASMR: Which is Better for Reducing Stress and Anxiety?\n\n**Video Title:** AI ASMR vs Traditional ASMR: Who Wins for Stress Relief? (The Ultimate Showdown!)\n\n---\n\n**(0-5 seconds - HOOK)**\n\n**[Visual: Close-up of host looking serene, then a sudden shift to a confused/stressed look. Gentle ASMR sounds (soft whispers, tapping) play underneath, then glitch out briefly.]**\n\n**Host (Softly, almost whispering):** Do you ever just need... *[soft sigh, eyes closing briefly]* ...to just *chill out*? But what if I told you AI is now getting in on the act?\n\n---\n\n**(5-30 seconds - ENGAGING INTRO)**\n\n**Host:** Hey everyone, and welcome back to the channel! If you’re like me, life can sometimes feel like a runaway train, and finding ways to de-stress is an absolute necessity. For millions of us, that \"way\" is ASMR – those tingles, those whispers, those gentle sounds that just melt away tension.\n\n**[Visual: Quick montage of diverse traditional ASMR clips (tapping, brushing, soft speaking, crinkles) interspersed with futuristic-looking AI imagery.]**\n\n**Host:** But the world of ASMR is evolving. We're seeing more and more AI-generated ASMR content pop up. So, today, we're diving deep into the ultimate question: When it comes to reducing stress and anxiety, is AI ASMR a genuine contender, or does the human touch of traditional ASMR still reign supreme? Let’s find out!\n\n---\n\n**(30 seconds - 2:00 minutes - UNDERSTANDING ASMR & TRADITIONAL ASMR)**\n\n**Host:** First things first, for anyone new here, a quick ASMR primer. ASMR stands for Autonomous Sensory Meridian Response. It’s that relaxing, often tingling sensation some people experience in response to specific auditory or visual triggers – think soft whispers, gentle tapping, slow hand movements, or even certain role-plays. It’s incredible for relaxation, sleep, and yes, stress relief.\n\n**[Visual: Host gestures towards a split screen or graphic explaining ASMR.]**\n\n**Host:** Now, let's talk about **Traditional ASMR**. This is what most of us are familiar with. It involves a real human being creating those triggers.\n\n**[Visual: Show an example of a popular traditional ASMRtist's video playing silently in the background or as an overlay.]**\n\n**Host:** Think about your favorite ASMRtists. They might whisper directly into the mic, perform intricate tapping patterns, or role-play scenarios like a virtual spa day or a gentle eye exam.\n\n**[Visual: Host demonstrates a few simple ASMR triggers (e.g., light finger tapping on desk, soft page turning).]**\n\n**Host:** The magic of traditional ASMR often lies in:\n1.  **The Human Connection:** There's a sense of presence, empathy, and genuine interaction. It feels like someone is actually *there* with you.\n2.  **Authenticity:** The imperfections, the slight variations in sound, the natural breathing – it all adds to the organic, human feel.\n3.  **Variety & Nuance:** Human ASMRtists bring their unique personalities, creative ideas, and a wide range of triggers that can evolve over time.\n\n**Host:** For many, traditional ASMR is a comforting, predictable ritual, almost like listening to a friend.\n\n---\n\n**(2:00 minutes - 3:30 minutes - INTRODUCING AI ASMR)**\n\n**Host:** But what happens when we take that human element out of the equation and hand it over to algorithms? Welcome to the world of **AI ASMR.**\n\n**[Visual: Transition to a more techy, futuristic aesthetic. Show examples of AI-generated voices/sounds, perhaps a simple AI interface creating sounds.]**\n\n**Host:** AI ASMR uses artificial intelligence to generate sounds, voices, and even visual patterns designed to evoke those same ASMR tingles. This can range from perfectly looped, incredibly consistent soundscapes to synthesized whispers that attempt to mimic human speech.\n\n**[Visual: Show a graphic with bullet points for AI ASMR features.]**\n\n**Host:** What are the key characteristics here?\n1.  **Consistency:** AI doesn't get tired or make mistakes. Triggers can be perfectly looped and maintained indefinitely.\n2.  **Customization:** Some AI ASMR platforms allow you to custom-build your soundscape – choose specific whispers, tapping speeds, background noises, and blend them seamlessly.\n3.  **Availability:** It's always there, always perfect, on demand. There's no waiting for a new video from your favorite ASMRtist.\n4.  **Novelty:** It's a new frontier, and there's a certain fascination with what AI can create.\n\n**Host:** The promise of AI ASMR is compelling: perfectly tailored, endlessly available, flawless relaxation. But does it deliver the same stress-reducing punch?\n\n---\n\n**(3:30 minutes - 5:30 minutes - THE GREAT DEBATE: AI VS. TRADITIONAL FOR STRESS & ANXIETY)**\n\n**Host:** So, now for the main event: AI ASMR versus Traditional ASMR for stress and anxiety relief. Let's break it down.\n\n**[Visual: Split screen, \"Traditional ASMR\" on left, \"AI ASMR\" on right, with bullet points appearing below each as host speaks.]**\n\n**Host:**\n*   **The \"Tingle\" Factor:**\n    *   **Traditional:** For many, the tingles are stronger and more reliable with human ASMR. The slight imperfections, the breath, the *realness* of the sound can trigger a more profound physical response.\n    *   **AI:** AI can produce tingles, absolutely. But sometimes they can feel more… clinical. The perfection can almost be jarring, or lead to what some call the \"uncanny valley\" effect, where it's almost human but not quite, and that can actually be unsettling for some.\n\n*   **The \"Connection\" Factor (Crucial for Anxiety):**\n    *   **Traditional:** This is where traditional ASMR often shines. The feeling of a human being paying gentle attention to you, whispering directly to you, or performing a caring role-play, fosters a sense of safety and connection. This is incredibly powerful for anxiety reduction. It's like a warm, comforting presence.\n    *   **AI:** This is AI's biggest hurdle. While it can mimic a voice, it can't (yet) mimic empathy or genuine presence. The comfort it provides is more utilitarian – a pleasant soundscape – rather than a relational one. For deep-seated anxiety that craves connection, AI might fall short.\n\n*   **The \"Consistency vs. Predictability\" Factor:**\n    *   **Traditional:** Your favorite ASMRtist might have off days, or try new triggers that don't work for you. But their personality provides a consistent, predictable *comfort*.\n    *   **AI:** AI offers perfect consistency in sound, which can be great if you know exactly what you want and just need that specific sound, perfectly looped, without any deviation. It's predictably perfect in its execution.\n\n*   **Customization vs. Discovery:**\n    *   **Traditional:** You discover new triggers and experiences through the creativity of different ASMRtists. It's an exploration.\n    *   **AI:** You custom-build your ideal sound. It's tailored, but might lack the surprise and delight of human creativity.\n\n**Host:** Ultimately, I think the choice often comes down to what kind of stress or anxiety you're dealing with.\n\n---\n\n**(5:30 minutes - 6:30 minutes - MY VERDICT & CONCLUSION)**\n\n**Host:** For me, and for many who experience significant stress or anxiety, the **human element of traditional ASMR is still king.** The sense of presence, the genuine connection, the empathy in a human whisper – these are incredibly potent tools for calming an overactive mind and feeling truly relaxed and safe.\n\n**[Visual: Host looking directly at the camera, leaning in slightly, making eye contact.]**\n\n**Host:** AI ASMR has its place, though! If you need a very specific, perfectly looped sound for background noise, or if you're experimenting with different sound profiles, it's fantastic. It’s also incredibly useful if you find the *idea* of a human watching or interacting with you a bit unsettling, but still want the gentle sounds.\n\n**Host:** Think of it this way: Traditional ASMR is like a comforting hug from a friend. AI ASMR is like a perfectly programmed, high-tech massage chair. Both can relieve tension, but one offers a deeper, more emotional connection.\n\n**Host:** So, my verdict? For pure, deep stress and anxiety reduction, especially where connection and empathy are needed, **Traditional ASMR still holds the crown.** But AI ASMR is a fascinating, emerging field, and it will be incredible to see how it develops.\n\n---\n\n**(6:30 minutes - 7:00 minutes - CALL TO ACTION & OUTRO)**\n\n**Host:** What are YOUR thoughts? Have you tried AI ASMR? Did it give you tingles, or did it feel a bit... sterile? Let me know in the comments below – I love hearing your experiences!\n\n**[Visual: On-screen text: \"LIKE\", \"SUBSCRIBE\", \"COMMENT\".]**\n\n**Host:** If you found this video helpful or interesting, please give it a big thumbs up, subscribe to the channel for more content on well-being and tech, and hit that notification bell so you don’t miss out.\n\n**Host (softly, with a gentle smile):** Remember, finding your calm is a personal journey. Whether it's human whispers or AI algorithms, I hope you find what brings you peace. Stay tingly, stay relaxed, and I’ll see you in the next video!\n\n**[Visual: End screen with channel branding, links to other videos, and social media handles. Gentle ASMR sound fades out.]**"
+        }
+      }
+    ],
+    "AI Agent1": [
+      {
+        "json": {
+          "output": "Here is the professional format for your Google Docs, including the YouTube SEO title, short description, and 10 SEO tags based on your script:\n\n---\n\n# YouTube Video SEO Details\n\n## Video Title\n\n**AI ASMR vs Traditional ASMR: Who Wins for Stress & Anxiety Relief? (Ultimate Comparison)**\n\n---\n\n## Video Description\n\nFeeling stressed or anxious? ASMR is a lifesaver for millions! But now, artificial intelligence is joining the relaxation game. In this ultimate showdown, we dive deep into AI ASMR vs Traditional ASMR to see which reigns supreme for reducing stress and anxiety.\n\nDoes the human touch deliver stronger tingles and a deeper connection, or can AI's perfect consistency offer a new level of calm? We compare the \"tingle factor,\" human connection, customization, and more to give you our verdict. Watch to find out which type of ASMR is better for *your* stress relief journey! Don't forget to like, subscribe, and share your experiences in the comments below!\n\n---\n\n## SEO Tags\n\n1.  ASMR\n2.  AI ASMR\n3.  Traditional ASMR\n4.  Stress Relief\n5.  Anxiety Relief\n6.  ASMR vs AI\n7.  Relaxation\n8.  ASMR Triggers\n9.  Sleep Aid\n10. AI Generated ASMR\n\n---"
+        }
+      }
+    ],
+    "Update a document": [
+      {
+        "json": {
+          "documentId": "1H9h-GloUCqKJPkzMlXagWLT-tF8j4a8MrIttSQRGFek"
+        }
+      }
+    ],
+    "Create a document": [
+      {
+        "json": {
+          "kind": "drive#file",
+          "id": "1H9h-GloUCqKJPkzMlXagWLT-tF8j4a8MrIttSQRGFek",
+          "name": "AI ASMR vs Traditional ASMR: Who Wins for Stress & Anxiety Relief? (Ultimate Comparison)",
+          "mimeType": "application/vnd.google-apps.document"
+        }
+      }
+    ],
+    "Edit Fields": [
+      {
+        "json": {
+          "Document url": "https://docs.google.com/document/d/1H9h-GloUCqKJPkzMlXagWLT-tF8j4a8MrIttSQRGFek"
+        }
+      }
+    ],
+    "Send a message1": [
+      {
+        "json": {
+          "id": "19b31eafcab633e2",
+          "threadId": "19b31eafcab633e2",
+          "labelIds": [
+            "UNREAD",
+            "SENT",
+            "INBOX"
+          ]
+        }
+      }
+    ],
+    "HTTP Request1": [
+      {
+        "json": {
+          "code": 200,
+          "msg": "success",
+          "data": {
+            "taskId": "5aef991d44f6bdb9b82ff5bfb2a4562b",
+            "model": "sora-2-text-to-video",
+            "state": "success",
+            "param": "{\"input\":\"{\\\"remove_watermark\\\":true,\\\"aspect_ratio\\\":\\\"landscape\\\",\\\"prompt\\\":\\\"POV: Waking up with Viking war in 2050. First-person view POV GoPro shot of my hands, still slick with sleep, gripping a futuristic vibro-axe, its hilt humming with barely contained energy. My augmented eyes adjust to the dim, smoky light filtering through the cracked viewport of my dropship. The metallic tang of ozone mixes with the faint scent of burnt circuits. In the background, the dropship lurches violently, alarms blaring. Outside, chaotic flashes of laser fire paint the smoke-choked battlefield. Distant war cries, a guttural mix of human and synthesized roars, echo through the oppressive atmosphere. Debris tumbles across the floor, the rough, recycled metal cold beneath my worn combat boots. A holographic display flickers erratically, showing a rapidly depleting shield integrity. Adrenaline surges as the ramp begins to lower, revealing the thunderous roar of war.\\\"}\",\"model\":\"sora-2-text-to-video\"}",
+            "resultJson": "{\"resultWaterMarkUrls\":[\"https://tempfile.aiquickdraw.com/f/5aef991d44f6bdb9b82ff5bfb2a4562b/a21b9e00-4814-43eb-9f45-153393115f7a.mp4\"],\"resultUrls\":[\"https://tempfile.aiquickdraw.com/f/5aef991d44f6bdb9b82ff5bfb2a4562b/aaf93ead-0875-40ea-8aa1-974991b56852.mp4\"]}",
+            "failCode": "",
+            "failMsg": "",
+            "costTime": 207,
+            "completeTime": 1765204185000,
+            "createTime": 1765203978000
+          }
+        }
+      }
+    ],
+    "Message a model": [
+      {
+        "json": {
+          "content": {
+            "parts": [
+              {
+                "text": "{\n  \"prompt\": \"First-person view POV GoPro shot of my hands holding a smartphone, swiping through calming ASMR videos. My fingers gently tap the screen, feeling the cool glass. Soft ambient light from the phone illuminates my face. In the background, a softly lit room, with gentle light shifts as the video changes. The quiet hum of ambient sounds from the video plays. The subtle texture of a soft blanket under my arm. A slight breeze rustles sheer curtains. The air feels still and peaceful. The faint scent of lavender from a nearby diffuser. The visual of gentle rain on a window pane, creating a ripple effect. A sense of calm washes over me as the AI's generated whispers provide a consistent, soothing rhythm.\"\n}"
+              }
+            ],
+            "role": "model"
+          },
+          "finishReason": "STOP",
+          "index": 0
+        }
+      }
+    ],
+    "Create video": [
+      {
+        "json": {
+          "code": 402,
+          "msg": "The current credits are insufficient. Please top up.",
+          "data": null
+        }
+      }
+    ],
+    "Code in JavaScript2": [
+      {
+        "json": {
+          "prompt": "First-person view POV GoPro shot of my hands holding a smartphone, swiping through calming ASMR videos. My fingers gently tap the screen, feeling the cool glass. Soft ambient light from the phone illuminates my face. In the background, a softly lit room, with gentle light shifts as the video changes. The quiet hum of ambient sounds from the video plays. The subtle texture of a soft blanket under my arm. A slight breeze rustles sheer curtains. The air feels still and peaceful. The faint scent of lavender from a nearby diffuser. The visual of gentle rain on a window pane, creating a ripple effect. A sense of calm washes over me as the AI's generated whispers provide a consistent, soothing rhythm."
+        }
+      }
+    ],
+    "Code in JavaScript1": [
+      {
+        "json": {
+          "title": "AI ASMR vs Traditional ASMR: Who Wins for Stress & Anxiety Relief? (Ultimate Comparison)",
+          "description": "Feeling stressed or anxious? ASMR is a lifesaver for millions! But now, artificial intelligence is joining the relaxation game. In this ultimate showdown, we dive deep into AI ASMR vs Traditional ASMR to see which reigns supreme for reducing stress and anxiety.\n\nDoes the human touch deliver stronger tingles and a deeper connection, or can AI's perfect consistency offer a new level of calm? We compare the \"tingle factor,\" human connection, customization, and more to give you our verdict. Watch to find out which type of ASMR is better for *your* stress relief journey! Don't forget to like, subscribe, and share your experiences in the comments below!",
+          "tags": "1.  ASMR, 2.  AI ASMR, 3.  Traditional ASMR, 4.  Stress Relief, 5.  Anxiety Relief, 6.  ASMR vs AI, 7.  Relaxation, 8.  ASMR Triggers, 9.  Sleep Aid, 10. AI Generated ASMR, ---",
+          "doc_content": "YouTube Video SEO Details\n\nVideo Title\nAI ASMR vs Traditional ASMR: Who Wins for Stress & Anxiety Relief? (Ultimate Comparison)\n\nVideo Description\nFeeling stressed or anxious? ASMR is a lifesaver for millions! But now, artificial intelligence is joining the relaxation game. In this ultimate showdown, we dive deep into AI ASMR vs Traditional ASMR to see which reigns supreme for reducing stress and anxiety.\n\nDoes the human touch deliver stronger tingles and a deeper connection, or can AI's perfect consistency offer a new level of calm? We compare the \"tingle factor,\" human connection, customization, and more to give you our verdict. Watch to find out which type of ASMR is better for *your* stress relief journey! Don't forget to like, subscribe, and share your experiences in the comments below!\n\nSEO Tags\n1.  ASMR, 2.  AI ASMR, 3.  Traditional ASMR, 4.  Stress Relief, 5.  Anxiety Relief, 6.  ASMR vs AI, 7.  Relaxation, 8.  ASMR Triggers, 9.  Sleep Aid, 10. AI Generated ASMR, ---\n"
+        }
+      }
+    ],
+    "Code in JavaScript3": [
+      {
+        "json": {
+          "videoUrl": "https://tempfile.aiquickdraw.com/f/5aef991d44f6bdb9b82ff5bfb2a4562b/aaf93ead-0875-40ea-8aa1-974991b56852.mp4"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Clean Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean Data": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a document": {
+      "main": [
+        [
+          {
+            "node": "Update a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Create a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a document": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create video": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Create video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message1": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "Upload a video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "bbae900f-6cf6-426d-b87f-18a290102a0a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8659bd7e124e2b9e112864bdfd1b69886a586a9728524b335fe9ce079360fb17"
+  },
+  "id": "rkKEkw7tWJhtFGLF",
+  "tags": []
+}
