@@ -1,0 +1,751 @@
+{
+  "name": "Ecommerce Auto Pilot System",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 🛒 Order Intake Automation\n",
+        "height": 576,
+        "width": 1808,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -944,
+        -112
+      ],
+      "typeVersion": 1,
+      "id": "6bd39b92-3e8d-4e8b-bc3f-1af9baf560f2",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook/order_created",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -896,
+        -16
+      ],
+      "id": "3e9ba0e3-eadc-4fbc-abc1-fcc2f0fab563",
+      "name": "Create Order",
+      "webhookId": "98a6f216-8572-4be8-944c-ff1f65108893"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json.body\n\nconst customerName = [input.address.firstName, input.address.lastName]\n  .filter(Boolean)\n  .join(\" \");\n\nconst normalizedOrder = {\n  orderId: input.orderId || `ORD-${Date.now()}`,\n  customer: {\n    name: customerName || \"\",\n    email: input.address.email || \"\",\n    phone: input.address.phone || \"\", \n    address: input.address.street || \"\", \n  },\n  items: input.items || [],\n  orderDate: input.orderDate || new Date().toISOString(),\n  totalAmount: input.amount || 0,\n  paymentStatus: input.paymentStatus || \"pending\",\n  orderStatus: \"received\"\n};\n\nreturn { json: normalizedOrder };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        -16
+      ],
+      "id": "49f6e63d-96e7-47b7-bb73-b660ca7c8a34",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1fSZXpIaqvhzktRs8Q8TmqYcR1yG0Akdt1si2SvrbXeg",
+          "mode": "list",
+          "cachedResultName": "Ecommerce Auto post",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1fSZXpIaqvhzktRs8Q8TmqYcR1yG0Akdt1si2SvrbXeg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1fSZXpIaqvhzktRs8Q8TmqYcR1yG0Akdt1si2SvrbXeg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "OrderId": "={{ $json.orderId }}",
+            "Customer Name ": "={{ $json.customer.name }}",
+            "Customer Email": "={{ $json.customer.email }}",
+            "Customer Number": "={{ $json.customer.phone }}",
+            "Item Name": "={{ $json.items[0].name }}",
+            "Category": "={{ $json.items[0].category }}",
+            "Item Price": "=${{ $json.items[0].price }}",
+            "Payment Status": "={{ $json.paymentStatus }}",
+            "Full Adress": "={{ $json.customer.address }}",
+            "Total ": "=${{ $json.totalAmount }}",
+            "Date": "={{ $json.orderDate }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "OrderId",
+              "displayName": "OrderId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Customer Name ",
+              "displayName": "Customer Name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Customer Email",
+              "displayName": "Customer Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Customer Number",
+              "displayName": "Customer Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Item Name",
+              "displayName": "Item Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Item Price",
+              "displayName": "Item Price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Payment Status",
+              "displayName": "Payment Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Full Adress",
+              "displayName": "Full Adress",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Total ",
+              "displayName": "Total ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -368,
+        -16
+      ],
+      "id": "a4f89f03-1499-4737-a5fe-443178edb893",
+      "name": "Store order",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "p3kUNeeocnIGllPx",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.pdf.co/v1/pdf/convert/from/html",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "ayshamalik1413@gmail.com_n4pMXtj0aMsdUIf6CZXxJTH4ugliySv0d63PSHGiNKlsimvhXiYDKCuoGIgLko3r"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "html",
+              "value": "=<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\" />\n  <title>Packing Slip</title>\n  <style>\n    body { font-family: Arial, sans-serif; font-size: 14px; color: #333; }\n    h1 { text-align: center; }\n    table { width: 100%; border-collapse: collapse; margin-top: 20px; }\n    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }\n    th { background-color: #f0f0f0; }\n    .customer-info, .order-info { margin-bottom: 20px; }\n  </style>\n</head>\n<body>\n\n  <h1>Packing Slip</h1>\n\n  <div class=\"order-info\">\n    <strong>Order ID:</strong> {{ $json.OrderId }}<br/>\n    <strong>Date:</strong> {{ $json.Date }}<br/>\n    <strong>Payment Status:</strong> {{ $json['Payment Status'] }}<br/>\n  </div>\n\n  <div class=\"customer-info\">\n    <strong>Customer Details:</strong><br/>\n    {{ $json['Customer Name '] }}<br/>\n    {{ $json['Customer Email'] }}<br/>\n    {{ $json['Customer Number'] }}<br/>\n    {{ $json['Full Adress'] }}\n  </div>\n\n  <h2>Items</h2>\n  <table>\n    <thead>\n      <tr>\n        <th>Item Name</th>\n        <th>Category</th>\n        <th>Price</th>\n        <th>Quantity</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td>{{ $json['Item Name'] }}</td>\n        <td>{{ $json.Category }}</td>\n        <td>{{ $json['Item Price'] }}</td>\n        <td>{{ $('Edit Fields1').item.json.items[0].quantity }}</td>\n      </tr>\n    </tbody>\n  </table>\n\n  <div style=\"margin-top: 20px;\">\n    <strong>Total:</strong> {{ $json['Total '] }}\n  </div>\n\n</body>\n</html>\n"
+            },
+            {
+              "name": "name",
+              "value": "packing-slip.pdf"
+            },
+            {
+              "name": "async",
+              "value": "false"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -64,
+        128
+      ],
+      "id": "61c67f82-af86-4006-89af-8db6abf65a3d",
+      "name": "Create pdf slip"
+    },
+    {
+      "parameters": {
+        "sendTo": "ayshamalik1413@gmail.com ",
+        "subject": "New Order #12345 - Packing Slip",
+        "emailType": "text",
+        "message": "=Hi Warehouse Team,\n\nA new order has been placed.\n\nOrder ID:   {{ $('Store order').item.json.OrderId }}\nCustomer: {{ $('Store order').item.json['Customer Name '] }}\nShipping Address:  {{ $('Store order').item.json['Full Adress'] }}\n\nPaking Slip Pdf : {{ $json.url }}\n\n\n\nThanks,  \nTomato.com\n",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        224,
+        -16
+      ],
+      "id": "adfe55f7-13f2-43ca-a91a-aecad5327e15",
+      "name": "Send slip to warehouse",
+      "webhookId": "4758b1b3-2cf9-4a1b-89d2-097734ddf45e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "JuybaxNbrVqsIk4f",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5016ee68-1dad-499b-aaa1-0b4213f5eef3",
+              "name": "OrderStatus",
+              "value": "Received",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        496,
+        -16
+      ],
+      "id": "1d506031-5a01-4523-bb4f-212a29a190ef",
+      "name": "Set order status"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"orderStatus\": \"{{ $json.OrderStatus }}\"\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        512,
+        224
+      ],
+      "id": "8e7ad172-b456-4d0e-bcfb-19b3f6409e96",
+      "name": "Send order status to app"
+    },
+    {
+      "parameters": {
+        "sendTo": "ayshamalik1413@gmail.com",
+        "subject": "=Order  {{ $('Edit Fields1').item.json.orderId }} Received",
+        "emailType": "text",
+        "message": "=Dear {{ $('Edit Fields1').item.json.customer.name }},  \n\nYour order #{{ $('Edit Fields1').item.json.orderId }} is being carefully prepared, and we’ll keep you updated until it’s delivered soon.\nThanks For Placing Order.\n\nTOMATO.com",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        224,
+        208
+      ],
+      "id": "a754bbd5-67d3-40e2-8889-e1e4f93f159a",
+      "name": "Send message to customer",
+      "webhookId": "d4cb670c-da20-4493-9738-bd073f948b7e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "JuybaxNbrVqsIk4f",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "payment_completed",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -896,
+        240
+      ],
+      "id": "880cb63c-afdb-4abb-82aa-fb64d7cfd363",
+      "name": "Webhook",
+      "webhookId": "6b98dbe2-11ec-4379-a43a-dda590d16071"
+    },
+    {
+      "parameters": {
+        "sendTo": "ayshamalik1413@gmail.com",
+        "subject": "Payment Successfully Received",
+        "emailType": "text",
+        "message": "=Dear {{ $json.body.customer.address.firstName }},\n\nThank you for your payment for order #{{ $json.body.orderId }}.\nWe have received your payment of ${{ $json.body.amount }}.\n\nYour order is now being processed.\n\nBest regards,\nTomato.com\n",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -640,
+        240
+      ],
+      "id": "b75b2112-5d8d-412b-9bfd-aad762c380f3",
+      "name": "Send a message",
+      "webhookId": "037464d3-2ba4-4caa-a97d-50fa7725ca75",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "JuybaxNbrVqsIk4f",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -384,
+        240
+      ],
+      "id": "95ff5cb8-349d-4534-b183-7d11d65a0d7d",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {
+    "Create Order": [
+      {
+        "json": {
+          "headers": {
+            "host": "localhost:5678",
+            "connection": "keep-alive",
+            "content-length": "459",
+            "sec-ch-ua-platform": "\"Windows\"",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+            "accept": "application/json, text/plain, */*",
+            "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+            "content-type": "application/json",
+            "sec-ch-ua-mobile": "?0",
+            "origin": "http://localhost:5173",
+            "sec-fetch-site": "same-site",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-dest": "empty",
+            "referer": "http://localhost:5173/",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "accept-language": "en-US,en;q=0.9"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "address": {
+              "firstName": "Aysha",
+              "lastName": "Malik",
+              "email": "ayshamalik1413@gmail.com",
+              "street": "Garh more district jhang",
+              "city": "Garh Mor",
+              "state": "Punjab ",
+              "zipcode": "39350",
+              "country": "Pakistan",
+              "phone": "03190255829"
+            },
+            "items": [
+              {
+                "_id": "68ad4932a138b8c35c2ac698",
+                "name": "Chicken Salad",
+                "description": "Crisp garden greens tossed for the ultimate burst of freshness.",
+                "image": "1756186930237.png",
+                "price": 24,
+                "category": "Salad",
+                "__v": 0,
+                "quantity": 1
+              }
+            ],
+            "amount": 26
+          },
+          "webhookUrl": "http://localhost:5678/webhook-test/webhook/order_created",
+          "executionMode": "test"
+        }
+      }
+    ],
+    "Edit Fields1": [
+      {
+        "json": {
+          "orderId": "ORD-1765689548402",
+          "customer": {
+            "name": "Aysha Malik",
+            "email": "ayshamalik1413@gmail.com",
+            "phone": "03190255829",
+            "address": "Garh more district jhang"
+          },
+          "items": [
+            {
+              "_id": "68ad4932a138b8c35c2ac698",
+              "name": "Chicken Salad",
+              "description": "Crisp garden greens tossed for the ultimate burst of freshness.",
+              "image": "1756186930237.png",
+              "price": 24,
+              "category": "Salad",
+              "__v": 0,
+              "quantity": 1
+            }
+          ],
+          "orderDate": "2025-12-14T05:19:08.402Z",
+          "totalAmount": 26,
+          "paymentStatus": "pending",
+          "orderStatus": "received"
+        }
+      }
+    ],
+    "Store order": [
+      {
+        "json": {
+          "OrderId": "ORD-1765689548402",
+          "Customer Name ": "Aysha Malik",
+          "Customer Email": "ayshamalik1413@gmail.com",
+          "Customer Number": "03190255829",
+          "Item Name": "Chicken Salad",
+          "Category": "Salad",
+          "Item Price": "$24",
+          "Payment Status": "pending",
+          "Full Adress": "Garh more district jhang",
+          "Total ": "$26",
+          "Date": "2025-12-14T05:19:08.402Z"
+        }
+      }
+    ],
+    "Create pdf slip": [
+      {
+        "json": {
+          "pageCount": 1,
+          "error": false,
+          "status": 200,
+          "credits": 9,
+          "remainingCredits": 9991,
+          "duration": 1631,
+          "url": "https://pdf-temp-files.s3.us-west-2.amazonaws.com/46MKB2F8AU2PRTLTU284F03W5QDFCHU0/packing-slip.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIZJDPLX6D7EHVCKA%2F20251214%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20251214T080424Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=8736f348d025e6aa3c872b72911788f956183bf81176f2f3529ae8c33224e5cb",
+          "name": "packing-slip.pdf",
+          "outputLinkValidTill": "2025-12-14T09:04:24.081469+00:00"
+        }
+      }
+    ],
+    "Send slip to warehouse": [
+      {
+        "json": {
+          "id": "19b1be4b00a131bf",
+          "threadId": "19b1be4b00a131bf",
+          "labelIds": [
+            "UNREAD",
+            "SENT",
+            "INBOX"
+          ]
+        }
+      }
+    ],
+    "Set order status": [
+      {
+        "json": {
+          "OrderStatus": "Received"
+        }
+      }
+    ],
+    "Send order status to app": [
+      {
+        "json": {
+          "OrderStatus": "Received"
+        }
+      }
+    ],
+    "Send message to customer": [
+      {
+        "json": {
+          "id": "19b1bf120add30e5",
+          "threadId": "19b1bf120add30e5",
+          "labelIds": [
+            "UNREAD",
+            "SENT",
+            "INBOX"
+          ]
+        }
+      }
+    ],
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "accept": "application/json, text/plain, */*",
+            "content-type": "application/json",
+            "user-agent": "axios/1.13.2",
+            "content-length": "669",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "host": "localhost:5678",
+            "connection": "keep-alive"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "event": "payment_success",
+            "orderId": "6942aada3c7bb1acecb587e3",
+            "amount": 26,
+            "paymentStatus": true,
+            "status": "pending",
+            "customer": {
+              "userId": "69423f1f8a5d1f83f7cbb51d",
+              "address": {
+                "firstName": "Aysha",
+                "lastName": "Malik",
+                "email": "ayshamalik1413@gmail.com",
+                "street": "Garh more district jhang",
+                "city": "Garh Mor",
+                "state": "Punjab ",
+                "zipcode": "39350",
+                "country": "Pakistan",
+                "phone": "03190255829"
+              }
+            },
+            "items": [
+              {
+                "_id": "69423be6506008e6c8681c30",
+                "name": "Chiken Salad",
+                "description": "\"A delicate harmony of tender chicken, crisp greens, and creamy dressing—fresh, elegant, and irresistibly satisfying.\"",
+                "image": "1765948390149.png",
+                "price": 24,
+                "category": "Salad",
+                "__v": 0,
+                "quantity": 1
+              }
+            ]
+          },
+          "webhookUrl": "http://localhost:5678/webhook-test/payment_completed",
+          "executionMode": "test"
+        }
+      }
+    ],
+    "Send a message": [
+      {
+        "json": {
+          "id": "19b2c7d86fe98b8d",
+          "threadId": "19b2c7d86fe98b8d",
+          "labelIds": [
+            "UNREAD",
+            "SENT",
+            "INBOX"
+          ]
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Create Order": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Store order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store order": {
+      "main": [
+        [
+          {
+            "node": "Create pdf slip",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create pdf slip": {
+      "main": [
+        [
+          {
+            "node": "Send slip to warehouse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send slip to warehouse": {
+      "main": [
+        [
+          {
+            "node": "Set order status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set order status": {
+      "main": [
+        [
+          {
+            "node": "Send order status to app",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send order status to app": {
+      "main": [
+        [
+          {
+            "node": "Send message to customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Create pdf slip",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e98b259b-74f6-43ec-9472-85897ed5479a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8659bd7e124e2b9e112864bdfd1b69886a586a9728524b335fe9ce079360fb17"
+  },
+  "id": "mEOhU51n7YfH27DR",
+  "tags": []
+}
